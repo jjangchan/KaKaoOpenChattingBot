@@ -1,10 +1,5 @@
-import BinanceGetHistoricalData
-from datetime import datetime
+from TwitterBot import DataRepo
 
 if __name__ == '__main__':
-    path = "Binance_BTCUSDT_minute.csv"
-    BinanceGetHistoricalData.ReadCSVFile(path)
-
-
-
-
+    data = DataRepo.Data('TwitterBot/twitter_config.json')
+    data.StartOpperation()
