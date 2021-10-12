@@ -1,9 +1,0 @@
-{
-  "twitter_consumer_key" : "lb8SrKSqiTyOybTj0BgDaNXhe",
-  "twitter_consumer_secret" : "c9rRZIbMEnUXem2S1e3fmOwGGXKToY6MRihHkEq1ymEGIh78HU",
-  "twitter_access_token" : "1435404286821748739-arYPy9IhVvOPDyHgEhfKTgo8dh2UHZ",
-  "twitter_access_secret" : "uq31FGLIKszos9XmAgFYHSGI4qfmO9rqfgzkRxR65uzZq",
-  "telegram_token" : "2067230986:AAHVUA8MBQJXO5Gu9NH5ucvdAiN84tEL-l0",
-  "parse_account" : ["@jjangchan22"],
-  "telegram_account" : ["@bottest123123"]
-}
