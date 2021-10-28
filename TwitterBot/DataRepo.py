@@ -1,5 +1,7 @@
 import json
 import time
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 from TwitterBot.Log import Log
 from TwitterBot.TwitterClient import TwitterClient
 from TwitterBot.TelegramClient import TelegramClient
@@ -18,10 +20,12 @@ class Data(object):
     log_level = "INFO"
     log_file_name = "TwitterBot/twitter_telegram.log"
     log_instance = None
+    spreadsheet_url = ""
 
     def __init__(self, str_file_name):
         self.str_file_name = str_file_name
         self.__LoadJson()
+        self.__LoadGspread()
         Data.log_instance = Log.getInstance()
         Data.log_instance.ConfigLog(Data.log_level, Data.log_file_name)
         self.working = True
@@ -35,6 +39,7 @@ class Data(object):
                 Data.twitter_access_token = json_data["twitter"]["twitter_access_token"]
                 Data.twitter_access_secret = json_data["twitter"]["twitter_access_secret"]
                 Data.sleep_second = json_data["sleep_second"]
+                Data.spreadsheet_url = json_data["spreadsheet_url"]
                 for key, value in json_data["telegram"]["telegram_token"].items():
                     Data.telegram_token[key] = value[0]
                     for account in value[1]:
@@ -45,8 +50,60 @@ class Data(object):
                 Data.log_file_name = json_data["Log"]["file_name"]
                 Data.log_level = json_data["Log"]["log_level"]
 
+                #for key, value in Data.telegram_token.items():
+                #    print(key+" , "+value)
+                #for account in Data.set_twitter_account:
+                #    print(account)
+                #for key, value in Data.dict_twitter_account.items():
+                #    print(key+" , "+str(value))
+                #print("=================================================")
+
         except Exception as e:
-            Data.log_instance.logger.error("json load error = "+e)
+            print(e)
+
+    def __LoadGspread(self):
+        try:
+            scope = [
+                'https://spreadsheets.google.com/feeds',
+                'https://www.googleapis.com/auth/drive',
+            ]
+
+            json_file_name = 'TwitterBot/diesel-skyline-330402-df7cde95ac7a.json'
+
+            credentials = ServiceAccountCredentials.from_json_keyfile_name(json_file_name, scope)
+            gc = gspread.authorize(credentials)
+
+            spreadsheet_url = Data.spreadsheet_url
+
+            # 스프레스시트 문서 가져오기
+            doc = gc.open_by_url(spreadsheet_url)
+
+            # 시트 선택하기
+            worksheet = doc.worksheet("시트1")
+
+            # 데이터 추출
+            name_data = worksheet.col_values(1)
+            key_data = worksheet.col_values(2)
+            int_count = 0
+
+            for i in range(len(name_data)):
+                if name_data[i] == "":
+                    break
+                Data.telegram_token[name_data[i]] = key_data[i]
+                int_count += 1
+                twitter_account = worksheet.row_values(int_count)
+                for j in range(2, len(twitter_account)):
+                    if twitter_account[j] == "":
+                        break
+                    account = twitter_account[j]
+                    Data.set_twitter_account.add(account)
+                    if Data.dict_twitter_account.get(account) is None:
+                        Data.dict_twitter_account[account] = set()
+                    Data.dict_twitter_account[account].add(name_data[i])
+
+        except Exception as e:
+            Data.log_instance.logger.error("gspread load error = "+e)
+
 
     # 특정 계정 타임라인 새로운 트윗 올라옴 -> 텔레그램 채널방에 뿌리기
     def StartOpperation(self):
