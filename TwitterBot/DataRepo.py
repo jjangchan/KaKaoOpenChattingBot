@@ -40,23 +40,8 @@ class Data(object):
                 Data.twitter_access_secret = json_data["twitter"]["twitter_access_secret"]
                 Data.sleep_second = json_data["sleep_second"]
                 Data.spreadsheet_url = json_data["spreadsheet_url"]
-                for key, value in json_data["telegram"]["telegram_token"].items():
-                    Data.telegram_token[key] = value[0]
-                    for account in value[1]:
-                        Data.set_twitter_account.add(account)
-                        if Data.dict_twitter_account.get(account) is None:
-                            Data.dict_twitter_account[account] = set()
-                        Data.dict_twitter_account[account].add(key)
                 Data.log_file_name = json_data["Log"]["file_name"]
                 Data.log_level = json_data["Log"]["log_level"]
-
-                #for key, value in Data.telegram_token.items():
-                #    print(key+" , "+value)
-                #for account in Data.set_twitter_account:
-                #    print(account)
-                #for key, value in Data.dict_twitter_account.items():
-                #    print(key+" , "+str(value))
-                #print("=================================================")
 
         except Exception as e:
             print(e)
@@ -127,9 +112,10 @@ class Data(object):
                 if len(list_msg) > 0:
                     for value in Data.dict_twitter_account[account]:
                         dict_telegram_client[value].SendTelegram(list_msg)
-                    Data.log_instance.logger.info("["+account+"] send a message through telegram, total number of message = "+len(list_msg))
+                    Data.log_instance.logger.info("["+account+"] send a message through telegram, total number of message = "+str(len(list_msg)))
                 else:
-                    Data.log_instance.logger.info("["+account+"] empty list_ref")
+                    pass
+                    #Data.log_instance.logger.info("["+account+"] empty list_ref")
             time.sleep(Data.sleep_second)
 
     def StopOpperation(self):

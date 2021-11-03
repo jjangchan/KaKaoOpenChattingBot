@@ -22,11 +22,9 @@ class TwitterClient(object):
                                                access_token_key=self.twitter_access_token,
                                                access_token_secret=self.twitter_access_secret)
             except Exception as e:
-                print("connect_twitter error = ")
-                #TwitterClient.log_instance.logger.error("connect_twitter error = ")
+                TwitterClient.log_instance.logger.error("connect_twitter error = ")
         else:
-            pass
-            #TwitterClient.log_instance.logger.warn("twitter_connect already exists")
+            TwitterClient.log_instance.logger.warn("twitter_connect already exists")
 
     # 트위터 특정 계정 타임라인 데이터 가져오기
     # 파이썬은 object에 따라 Call by value 또는 Call by reference 가 결정됨

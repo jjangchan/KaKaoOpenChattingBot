@@ -21,11 +21,9 @@ class TelegramClient(object):
                 # for i in updates:
                 #    print(i)
             except Exception as e:
-                pass
-                #TelegramClient.log_instance.logger.error("connect_telegram error = ", e)
+                TelegramClient.log_instance.logger.error("connect_telegram error = ", e)
         else:
-            pass
-            #TelegramClient.log_instance.logger.warn("connect_telegram already exists")
+            TelegramClient.log_instance.logger.warn("connect_telegram already exists")
 
     # 텔레그램에 메시지 보내기
     def SendTelegram(self, list_msg):
